@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"flag"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"net/http"
 	"strings"
 	"time"
@@ -167,7 +167,7 @@ func (app *App) getAwairData(awairAddress string) {
 	}
 	defer resp.Body.Close()
 
-	body, err := ioutil.ReadAll(resp.Body)
+	body, err := io.ReadAll(resp.Body)
 	if err != nil {
 		app.Logger.Errorf("Failed to read body from Awair GET response: %+v", err)
 		return
@@ -186,4 +186,5 @@ func (app *App) getAwairData(awairAddress string) {
 	app.Co2Gauge.WithLabelValues(awairAddress).Set(float64(awairStats.Co2))
 	app.VOCGauge.WithLabelValues(awairAddress).Set(float64(awairStats.Voc))
 	app.PM25Gauge.WithLabelValues(awairAddress).Set(float64(awairStats.Pm25))
+	app.ScoreGauge.WithLabelValues(awairAddress).Set(float64(awairStats.Score))
 }
